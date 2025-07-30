@@ -18,7 +18,7 @@ export default async function webhookController(req, res) {
     await sendTelegramMessage({ nombre, email, numero });
 
     // 3. Enviar correo al cliente
-    await sendThankYouEmail({ nombre, email });
+   // await sendThankYouEmail({ nombre, email });
 
     res.status(200).json({ message: 'Lead procesado correctamente' });
   } catch (error) {
