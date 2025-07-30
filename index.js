@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import webhookController from './controllers/webhookController.js';
+import { webhookController } from './controllers/webhookController.js';
 
 dotenv.config();
 
