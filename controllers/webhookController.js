@@ -34,7 +34,7 @@ export const webhookController = async (req, res) => {
     // 3️⃣ Email (comentado por ahora)
    
     try {
-      await sendEmail(nombre, email, mensaje, numero, fecha);
+      await sendEmail({ nombre, email });
       console.log('✅ Email: Mensaje enviado');
     } catch (emailError) {
       console.error('❌ Error al enviar correo:', emailError.message || emailError);
