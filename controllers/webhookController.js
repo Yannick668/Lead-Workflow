@@ -15,7 +15,7 @@ export const webhookController = async (req, res) => {
 
     // 1️⃣ Google Sheets
     try {
-      await sendToGoogleSheets(nombre, email, numero, mensaje, fecha);
+      await sendToGoogleSheets({ nombre, email, numero, mensaje, fecha });
       console.log('✅ Google Sheets: Lead agregado');
     } catch (gsError) {
       console.error('❌ Error al guardar en Google Sheets:', gsError.message || gsError);
