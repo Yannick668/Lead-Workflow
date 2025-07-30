@@ -2,7 +2,7 @@ import { sendToGoogleSheets } from '../services/googleSheetsService.js';
 // import { sendTelegramMessage } from '../services/telegramService.js';
 import { sendEmail } from '../services/emailService.js'; // Comentado temporalmente
 
-export const handleWebhook = async (req, res) => {
+export const webhookController = async (req, res) => {
   try {
     const { nombre, email, numero, mensaje, fecha } = req.body;
 
