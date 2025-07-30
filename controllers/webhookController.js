@@ -1,28 +1,50 @@
-import { addToGoogleSheets } from '../services/googleSheetsService.js';
-import { sendTelegramMessage } from '../services/telegramService.js';
-import { sendThankYouEmail } from '../services/emailService.js';
+import { sendToGoogleSheets } from '../services/googleSheetsService.js';
+// import { sendTelegramMessage } from '../services/telegramService.js';
+import { sendEmail } from '../services/emailService.js'; // Comentado temporalmente
 
-export default async function webhookController(req, res) {
-  const { nombre, email, numero, mensaje, fecha } = req.body;
-
-  // Validación básica
-  if (!nombre || !email || !numero || !mensaje || !fecha) {
-    return res.status(400).json({ error: 'Faltan campos requeridos' });
-  }
-
+export const handleWebhook = async (req, res) => {
   try {
-    // 1. Guardar en Google Sheets (si no existe)
-    await addToGoogleSheets({ nombre, email, numero, mensaje, fecha });
+    const { nombre, email, numero, mensaje, fecha } = req.body;
 
-    // 2. Notificar por Telegram
-    await sendTelegramMessage({ nombre, email, numero });
+    console.log('✅ Datos recibidos:', { nombre, email, numero, mensaje, fecha });
 
-    // 3. Enviar correo al cliente
-   // await sendThankYouEmail({ nombre, email });
+    if (!nombre || !email || !numero) {
+      console.warn('⚠️ Faltan datos obligatorios');
+      return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
 
-    res.status(200).json({ message: 'Lead procesado correctamente' });
+    // 1️⃣ Google Sheets
+    try {
+      await sendToGoogleSheets(nombre, email, numero, mensaje, fecha);
+      console.log('✅ Google Sheets: Lead agregado');
+    } catch (gsError) {
+      console.error('❌ Error al guardar en Google Sheets:', gsError.message || gsError);
+    }
+
+    // 2️⃣ Telegram
+    /*
+    try {
+      await sendTelegramMessage(nombre, email, numero, mensaje, fecha);
+      console.log('✅ Telegram: Mensaje enviado');
+    } catch (tgError) {
+      console.error('❌ Error al enviar a Telegram:', tgError.message || tgError);
+    }
+    */
+
+    // 3️⃣ Email (comentado por ahora)
+   
+    try {
+      await sendEmail(nombre, email, mensaje, numero, fecha);
+      console.log('✅ Email: Mensaje enviado');
+    } catch (emailError) {
+      console.error('❌ Error al enviar correo:', emailError.message || emailError);
+    }
+  
+
+    return res.status(200).json({ message: 'Lead procesado exitosamente' });
+
   } catch (error) {
-    console.error('❌ Error en webhookController:', error.message);
-    res.status(500).json({ error: 'Error al procesar el lead' });
+    console.error('❌ Error general en webhookController:', error.message || error);
+    return res.status(500).json({ error: 'Error al procesar el lead' });
   }
-}
+};
