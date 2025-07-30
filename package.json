@@ -1,0 +1,33 @@
+{
+  "name": "glucalose-webhook",
+  "version": "1.0.0",
+  "description": "Webhook server to handle Glucalose form submissions and process leads via Google Sheets, Telegram, and Email.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "webhook",
+    "leads",
+    "google-sheets",
+    "telegram",
+    "nodemailer",
+    "express"
+  ],
+  "author": "VitalHealth",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "googleapis": "^133.0.0",
+    "node-fetch": "^2.6.9",
+    "nodemailer": "^6.9.9"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
