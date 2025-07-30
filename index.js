@@ -8,8 +8,15 @@ dotenv.config();
 
 const app = express();
 
-// 1️⃣ Habilitar CORS (por defecto permite todos los orígenes)
-app.use(cors());
+const allowedOrigin = 'https://darksalmon-salmon-617026.hostingersite.com';
+
+app.use(cors({
+  origin: allowedOrigin,
+  methods: ['POST', 'GET'],
+  credentials: false, // Cambia a true si usas cookies o headers con credenciales
+}));
+
+console.log(`🌐 CORS habilitado para: ${allowedOrigin}`);
 
 // 2️⃣ Middleware para parsear JSON
 app.use(bodyParser.json());
