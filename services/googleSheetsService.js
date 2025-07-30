@@ -1,8 +1,18 @@
 import { google } from 'googleapis';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 
-export async function addToGoogleSheets({ nombre, email, mensaje, fecha }) {
+export async function sendToGoogleSheets({ nombre, email, numero, mensaje, fecha }) {
+  // 1️⃣ Crear archivo temporal con las credenciales
+  const credsContent = process.env.GOOGLE_CREDENTIALS;
+  const tempPath = path.join(os.tmpdir(), 'google-creds.json');
+
+  fs.writeFileSync(tempPath, credsContent);
+
+  // 2️⃣ Autenticación con Google Sheets API usando archivo temporal
   const auth = new google.auth.GoogleAuth({
-    keyFile: 'credenciales-google.json',
+    keyFile: tempPath,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
 
@@ -11,10 +21,10 @@ export async function addToGoogleSheets({ nombre, email, mensaje, fecha }) {
 
   const spreadsheetId = process.env.SHEET_ID;
 
-  // 1️⃣ Leer los datos actuales para verificar duplicados
+  // 3️⃣ Leer los datos actuales para verificar duplicados
   const existingRows = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Leads!A:D',
+    range: 'Leads!A:E',
   });
 
   const rows = existingRows.data.values || [];
@@ -25,13 +35,13 @@ export async function addToGoogleSheets({ nombre, email, mensaje, fecha }) {
     return;
   }
 
-  // 2️⃣ Agregar nuevo lead si no hay duplicado
+  // 4️⃣ Agregar nuevo lead si no hay duplicado
   const response = await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Leads!A:D',
+    range: 'Leads!A:E',
     valueInputOption: 'USER_ENTERED',
     requestBody: {
-      values: [[nombre, email, mensaje, fecha]],
+      values: [[nombre, email, numero, mensaje, fecha]],
     },
   });
 
